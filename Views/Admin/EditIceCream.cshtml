@@ -1,0 +1,190 @@
+ @model IceCreamOrderingSystem.Models.IceCream
+
+@{
+    ViewData["Title"] = "Edit Ice Cream";
+    var categories = ViewBag.Categories as IEnumerable<IceCreamOrderingSystem.Models.Category>
+                     ?? Enumerable.Empty<IceCreamOrderingSystem.Models.Category>();
+}
+
+<style>
+    .edit-page {
+        max-width: 850px;
+        margin: 40px auto;
+        padding: 0 18px 50px;
+    }
+
+    .edit-header {
+        background: linear-gradient(135deg, #174d37, #39845c);
+        color: white;
+        padding: 28px 32px;
+        border-radius: 18px 18px 0 0;
+    }
+
+    .edit-header h2 {
+        margin: 0 0 8px;
+        font-weight: 750;
+    }
+
+    .edit-header p {
+        margin: 0;
+        opacity: .9;
+    }
+
+    .edit-card {
+        background: white;
+        padding: 32px;
+        border-radius: 0 0 18px 18px;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, .08);
+    }
+
+    .form-label {
+        font-weight: 650;
+        color: #234b38;
+        margin-bottom: 8px;
+    }
+
+    .form-control, .form-select {
+        border: 1px solid #d8e4dc;
+        border-radius: 10px;
+        padding: 12px 14px;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #39845c;
+        box-shadow: 0 0 0 .2rem rgba(57, 132, 92, .14);
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+    .btn-save {
+        background: #174d37;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 650;
+    }
+
+    .btn-save:hover {
+        background: #39845c;
+        color: white;
+    }
+
+    .btn-cancel {
+        display: inline-block;
+        padding: 12px 22px;
+        border: 1px solid #d3ded6;
+        border-radius: 10px;
+        text-decoration: none;
+        color: #234b38;
+        font-weight: 600;
+    }
+
+    .btn-cancel:hover {
+        background: #f0f6f2;
+        color: #174d37;
+    }
+
+    .availability-box {
+        background: #f3f8f4;
+        padding: 15px;
+        border-radius: 10px;
+        color: #234b38;
+    }
+
+    .text-danger {
+        font-size: .875rem;
+    }
+</style>
+
+<div class="edit-page">
+    <div class="edit-header">
+        <h2>Edit Ice Cream</h2>
+        <p>Update your ice cream details, price, stock and category.</p>
+    </div>
+
+    <div class="edit-card">
+        <form asp-controller="Admin" asp-action="EditIceCream"
+              asp-route-id="@Model.Id" method="post">
+
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="Id" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="form-group">
+                <label asp-for="Name" class="form-label">Ice Cream Name</label>
+                <input asp-for="Name" class="form-control"
+                       placeholder="Enter ice cream name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="4"
+                          placeholder="Describe your ice cream"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Price" class="form-label">Price (₹)</label>
+                        <input asp-for="Price" type="number" step="0.01" min="0.01"
+                               class="form-control" />
+                        <span asp-validation-for="Price" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Stock" class="form-label">Stock Quantity</label>
+                        <input asp-for="Stock" type="number" min="0"
+                               class="form-control" />
+                        <span asp-validation-for="Stock" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="CategoryId" class="form-label">Category</label>
+                <select asp-for="CategoryId" class="form-select"
+                        asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(categories, "Id", "Name", Model.CategoryId))">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ImageUrl" class="form-label">Image URL</label>
+                <input asp-for="ImageUrl" class="form-control"
+                       placeholder="https://example.com/icecream.jpg" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <small class="text-muted">Paste the image URL for this ice cream.</small>
+            </div>
+
+            <div class="form-group availability-box">
+                <div class="form-check">
+                    <input asp-for="IsAvailable" class="form-check-input" />
+                    <label asp-for="IsAvailable" class="form-check-label fw-semibold">
+                        Available for customers
+                    </label>
+                </div>
+                <small>Uncheck this option to hide the ice cream from available products.</small>
+            </div>
+
+            <div class="d-flex flex-wrap gap-3 mt-4">
+                <button type="submit" class="btn-save">Save Changes</button>
+                <a asp-controller="Admin" asp-action="IceCreams" class="btn-cancel">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

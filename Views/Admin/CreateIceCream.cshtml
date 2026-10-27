@@ -1,0 +1,90 @@
+
+@model IceCreamOrderingSystem.Models.IceCream
+
+@{
+    ViewData["Title"] = "Add Ice Cream";
+    var categories = ViewBag.Categories as List<IceCreamOrderingSystem.Models.Category>
+                     ?? new List<IceCreamOrderingSystem.Models.Category>();
+}
+
+<style>
+    .form-page { max-width:800px; margin:35px auto; padding:0 18px; }
+    .form-card { background:white; border:1px solid #e3ebe5; border-radius:18px; padding:30px; box-shadow:0 8px 28px #183b2910; }
+    .form-card h1 { color:#205b3e; font-weight:800; margin-bottom:8px; }
+    .form-label { font-weight:650; color:#35483b; margin-bottom:7px; }
+    .form-control, .form-select { border-radius:9px; padding:11px 12px; }
+    .btn-save { background:#236746; color:white; border:0; border-radius:9px; padding:12px 22px; font-weight:700; }
+    .btn-save:hover { background:#174d37; }
+    .btn-back { color:#236746; text-decoration:none; font-weight:650; margin-left:15px; }
+</style>
+
+<div class="form-page">
+    <div class="form-card">
+        <h1>Add New Ice Cream</h1>
+        <p class="text-muted mb-4">Enter the product details to add it to your menu.</p>
+
+        <form asp-action="CreateIceCream" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label">Ice Cream Name</label>
+                <input asp-for="Name" class="form-control" placeholder="e.g. Belgian Chocolate" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="3"
+                          placeholder="Describe the flavour and ingredients"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Price" class="form-label">Price (₹)</label>
+                    <input asp-for="Price" type="number" min="0.01" step="0.01" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Stock" class="form-label">Stock Quantity</label>
+                    <input asp-for="Stock" type="number" min="0" class="form-control" />
+                    <span asp-validation-for="Stock" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label">Category</label>
+                <select asp-for="CategoryId" class="form-select"
+                        asp-items="@(new Microsoft.AspNetCore.Mvc.Rendering.SelectList(categories, "Id", "Name"))">
+                    <option value="">-- Select Category --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
+                @if (!categories.Any())
+                {
+                    <small class="text-danger">No active categories exist yet. Add a category before creating an ice cream.</small>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ImageUrl" class="form-label">Image URL (optional)</label>
+                <input asp-for="ImageUrl" class="form-control" placeholder="/images/icecreams/chocolate.jpg" />
+                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+            </div>
+
+            <div class="form-check form-switch mb-4">
+                <input asp-for="IsAvailable" class="form-check-input" />
+                <label asp-for="IsAvailable" class="form-check-label">Available for customers</label>
+            </div>
+
+            <button type="submit" class="btn-save">Save Ice Cream</button>
+            <a asp-action="IceCreams" class="btn-back">Cancel</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

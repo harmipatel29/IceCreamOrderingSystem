@@ -1,0 +1,263 @@
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<style>
+    .admin-page {
+        max-width: 1200px;
+        margin: 35px auto;
+        padding: 0 20px 40px;
+        color: #26352d;
+    }
+
+    .admin-hero {
+        background: linear-gradient(120deg, #174d37, #39845c);
+        color: white;
+        border-radius: 20px;
+        padding: 35px;
+        margin-bottom: 28px;
+        box-shadow: 0 10px 28px rgba(23, 77, 55, 0.15);
+    }
+
+    .admin-hero h1 {
+        font-size: 32px;
+        font-weight: 800;
+        margin-bottom: 10px;
+    }
+
+    .admin-hero p {
+        margin-bottom: 20px;
+        opacity: .9;
+        line-height: 1.7;
+    }
+
+    .admin-btn {
+        display: inline-block;
+        background: white;
+        color: #205b3e;
+        padding: 11px 18px;
+        border-radius: 9px;
+        text-decoration: none;
+        font-weight: 700;
+        margin: 5px 7px 0 0;
+        transition: .2s ease;
+    }
+
+    .admin-btn:hover {
+        background: #edf6ef;
+        color: #174d37;
+        transform: translateY(-2px);
+    }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 18px;
+        margin-bottom: 28px;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e5ece7;
+        border-radius: 16px;
+        padding: 23px;
+        box-shadow: 0 5px 20px rgba(24, 59, 41, .06);
+        transition: .2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 9px 25px rgba(24, 59, 41, .10);
+    }
+
+    .stat-card span {
+        display: block;
+        color: #68776e;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .stat-card h2 {
+        margin-top: 13px;
+        margin-bottom: 0;
+        font-size: 32px;
+        font-weight: 800;
+        color: #215d40;
+    }
+
+    .quick-panel {
+        background: white;
+        border: 1px solid #e5ece7;
+        border-radius: 16px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(24, 59, 41, .05);
+    }
+
+    .quick-panel h3 {
+        font-weight: 800;
+        color: #205b3e;
+        margin-bottom: 8px;
+    }
+
+    .quick-description {
+        color: #778279;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
+
+    .quick-link {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 16px 4px;
+        border-bottom: 1px solid #edf0ed;
+        color: #285b40;
+        text-decoration: none;
+        font-weight: 650;
+        transition: .2s ease;
+    }
+
+    .quick-link:last-child {
+        border-bottom: none;
+    }
+
+    .quick-link:hover {
+        color: #174d37;
+        padding-left: 10px;
+    }
+
+    .quick-link span {
+        font-size: 21px;
+    }
+
+    .admin-note {
+        margin-top: 22px;
+        padding: 16px 18px;
+        border-radius: 12px;
+        background: #edf6ef;
+        color: #285b40;
+        font-size: 14px;
+    }
+
+    @@media (max-width: 600px) {
+        .admin-page {
+            margin-top: 20px;
+            padding-left: 14px;
+            padding-right: 14px;
+        }
+
+        .admin-hero {
+            padding: 25px 20px;
+        }
+
+        .admin-hero h1 {
+            font-size: 26px;
+        }
+
+        .stat-card {
+            padding: 19px;
+        }
+    }
+</style>
+
+<div class="admin-page">
+
+    <!-- Dashboard Header -->
+    <section class="admin-hero">
+        <h1>Welcome to Frosty Delight</h1>
+
+        <p>
+            Your admin workspace to manage ice creams, categories,
+            customers and orders from one place.
+        </p>
+
+        <a asp-controller="Admin"
+           asp-action="CreateIceCream"
+           class="admin-btn">
+            + Add Ice Cream
+        </a>
+
+        <a asp-controller="Admin"
+           asp-action="IceCreams"
+           class="admin-btn">
+            Manage Ice Creams
+        </a>
+
+        <a asp-controller="Category"
+           asp-action="Index"
+           class="admin-btn">
+            Manage Categories
+        </a>
+    </section>
+
+    <!-- Dashboard Statistics -->
+    <div class="stat-grid">
+
+        <div class="stat-card">
+            <span>Total Ice Creams</span>
+            <h2>@ViewBag.TotalIceCreams</h2>
+        </div>
+
+        <div class="stat-card">
+            <span>Total Categories</span>
+            <h2>@ViewBag.TotalCategories</h2>
+        </div>
+
+        <div class="stat-card">
+            <span>Total Orders</span>
+            <h2>@ViewBag.TotalOrders</h2>
+        </div>
+
+        <div class="stat-card">
+            <span>Total Customers</span>
+            <h2>@ViewBag.TotalCustomers</h2>
+        </div>
+
+        <div class="stat-card">
+            <span>Pending Orders</span>
+            <h2>@ViewBag.PendingOrders</h2>
+        </div>
+
+    </div>
+
+    <!-- Quick Management Links -->
+    <section class="quick-panel">
+
+        <h3>Quick Management</h3>
+
+        <p class="quick-description">
+            Choose a section to manage your store.
+        </p>
+
+        <a asp-controller="Admin"
+           asp-action="IceCreams"
+           class="quick-link">
+            <span>Manage Ice Creams</span>
+            <span>→</span>
+        </a>
+
+        <a asp-controller="Admin"
+           asp-action="CreateIceCream"
+           class="quick-link">
+            <span>Add New Ice Cream</span>
+            <span>→</span>
+        </a>
+
+        <a asp-controller="Category"
+           asp-action="Index"
+           class="quick-link">
+            <span>Manage Categories</span>
+            <span>→</span>
+        </a>
+
+    </section>
+
+    <div class="admin-note">
+        <strong>Admin Tip:</strong>
+        Add categories first, then add ice creams and update their stock
+        and availability.
+    </div>
+
+</div>

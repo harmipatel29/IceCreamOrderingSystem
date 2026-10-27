@@ -1,0 +1,219 @@
+ @model IceCreamOrderingSystem.Models.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<style>
+    .checkout-page {
+        max-width: 1150px;
+        margin: 35px auto;
+        padding: 0 18px 45px;
+    }
+
+    .checkout-heading {
+        margin-bottom: 25px;
+    }
+
+    .checkout-heading h2 {
+        color: #174d37;
+        font-weight: 800;
+    }
+
+    .checkout-card {
+        background: white;
+        border: 1px solid #e5ece7;
+        border-radius: 18px;
+        padding: 28px;
+        box-shadow: 0 10px 30px rgba(20, 60, 40, .06);
+        height: 100%;
+    }
+
+    .checkout-card h4 {
+        color: #174d37;
+        font-weight: 750;
+        margin-bottom: 22px;
+    }
+
+    .form-label {
+        color: #284d39;
+        font-weight: 650;
+    }
+
+    .form-control {
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #d7e3da;
+    }
+
+    .form-control:focus {
+        border-color: #39845c;
+        box-shadow: 0 0 0 .2rem rgba(57, 132, 92, .13);
+    }
+
+    .payment-option {
+        padding: 18px;
+        border: 1px solid #c7ddce;
+        background: #f2f8f3;
+        border-radius: 12px;
+    }
+
+    .order-item {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 13px 0;
+        border-bottom: 1px solid #edf1ee;
+    }
+
+    .checkout-total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: #174d37;
+        padding-top: 18px;
+    }
+
+    .place-order-btn {
+        background: #174d37;
+        color: white;
+        width: 100%;
+        padding: 14px;
+        border: 0;
+        border-radius: 11px;
+        font-weight: 750;
+        margin-top: 22px;
+    }
+
+    .place-order-btn:hover {
+        background: #39845c;
+    }
+
+    .back-link {
+        color: #246445;
+        text-decoration: none;
+        font-weight: 650;
+    }
+</style>
+
+<div class="checkout-page">
+    <div class="checkout-heading">
+        <h2>Secure Checkout</h2>
+        <p class="text-muted">Add your delivery details and confirm your order.</p>
+    </div>
+
+    <form asp-controller="Cart" asp-action="Checkout" method="post">
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly"
+             class="alert alert-danger"></div>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="checkout-card">
+                    <h4>Delivery Information</h4>
+
+                    <div class="mb-3">
+                        <label asp-for="CustomerName" class="form-label">
+                            Full Name
+                        </label>
+                        <input asp-for="CustomerName" class="form-control"
+                               placeholder="Enter your full name"
+                               autocomplete="name" />
+                        <span asp-validation-for="CustomerName"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Phone" class="form-label">
+                            Mobile Number
+                        </label>
+                        <input asp-for="Phone" class="form-control"
+                               placeholder="10-digit mobile number"
+                               type="tel" maxlength="10"
+                               autocomplete="tel" />
+                        <span asp-validation-for="Phone"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="DeliveryAddress" class="form-label">
+                            Complete Delivery Address
+                        </label>
+                        <textarea asp-for="DeliveryAddress"
+                                  class="form-control" rows="4"
+                                  placeholder="House/flat number, street, area, landmark, city, state and PIN code"
+                                  autocomplete="street-address"></textarea>
+                        <span asp-validation-for="DeliveryAddress"
+                              class="text-danger"></span>
+                    </div>
+
+                    <h4 class="mt-4">Payment Method</h4>
+
+                    <input type="hidden" asp-for="PaymentMethod" value="COD" />
+
+                    <div class="payment-option">
+                        <div class="d-flex align-items-start gap-3">
+                            <input type="radio" checked disabled
+                                   class="form-check-input mt-1" />
+                            <div>
+                                <strong>Cash on Delivery (COD)</strong>
+                                <div class="text-muted small mt-1">
+                                    Pay in cash when your ice cream order is delivered.
+                                </div>
+                                <span class="badge bg-success mt-2">
+                                    Payment at delivery
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="place-order-btn">
+                        Place Order · ₹@Model.TotalAmount.ToString("0.00")
+                    </button>
+
+                    <div class="text-center mt-3">
+                        <a asp-controller="Cart" asp-action="Index"
+                           class="back-link">← Back to Cart</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="checkout-card">
+                    <h4>Order Summary</h4>
+
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <div class="order-item">
+                            <div>
+                                <div class="fw-semibold">@item.Name</div>
+                                <div class="text-muted small">
+                                    Quantity: @item.Quantity
+                                </div>
+                            </div>
+                            <div class="fw-semibold text-nowrap">
+                                ₹@item.Subtotal.ToString("0.00")
+                            </div>
+                        </div>
+                    }
+
+                    <div class="checkout-total">
+                        <span>Total Amount</span>
+                        <span>₹@Model.TotalAmount.ToString("0.00")</span>
+                    </div>
+
+                    <p class="text-muted small mt-3 mb-0">
+                        Your order will be recorded after you select Place Order.
+                        COD payment will remain pending until payment is collected.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

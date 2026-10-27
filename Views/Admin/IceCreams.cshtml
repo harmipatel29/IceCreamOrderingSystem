@@ -1,0 +1,116 @@
+
+@model IEnumerable<IceCreamOrderingSystem.Models.IceCream>
+
+@{
+    ViewData["Title"] = "Manage Ice Creams";
+}
+
+<style>
+    .manage-page { max-width: 1200px; margin: 35px auto; padding: 0 18px; }
+    .manage-header { display:flex; justify-content:space-between; align-items:center; gap:15px; flex-wrap:wrap; margin-bottom:25px; }
+    .manage-header h1 { color:#205b3e; font-weight:800; margin:0; }
+    .btn-green { background:#236746; color:white; border:0; padding:11px 17px; border-radius:9px; text-decoration:none; font-weight:650; }
+    .btn-green:hover { background:#174d37; color:white; }
+    .table-wrap { background:white; border:1px solid #e5ece7; border-radius:15px; overflow-x:auto; box-shadow:0 5px 22px #183b2910; }
+    .ice-table { width:100%; border-collapse:collapse; min-width:760px; }
+    .ice-table th { background:#edf6ef; color:#245b3e; padding:15px; text-align:left; }
+    .ice-table td { padding:14px 15px; border-top:1px solid #edf0ed; vertical-align:middle; }
+    .ice-image { width:65px; height:60px; object-fit:cover; border-radius:10px; background:#f2f2f2; }
+    .status { padding:5px 10px; border-radius:20px; font-size:12px; font-weight:700; }
+    .available { background:#e2f6e8; color:#176638; }
+    .unavailable { background:#ffeded; color:#a12b2b; }
+    .action-link { text-decoration:none; font-weight:650; margin-right:10px; }
+    .edit-link { color:#1767a1; }
+    .delete-link { color:#c03535; }
+    .alert-box { padding:13px 16px; border-radius:10px; margin-bottom:18px; }
+    .success-box { background:#e5f7e9; color:#176638; }
+    .error-box { background:#ffeded; color:#a12b2b; }
+</style>
+
+<div class="manage-page">
+    <div class="manage-header">
+        <div>
+            <h1>Ice Cream Management</h1>
+            <p class="text-muted mt-2 mb-0">Manage your menu and product availability.</p>
+        </div>
+
+        <a asp-controller="Admin" asp-action="CreateIceCream" class="btn-green">
+            + Add Ice Cream
+        </a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert-box success-box">@TempData["Success"]</div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert-box error-box">@TempData["Error"]</div>
+    }
+
+    <div class="table-wrap">
+        <table class="ice-table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Ice Cream</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Any())
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" class="ice-image" />
+                                }
+                                else
+                                {
+                                    <div class="ice-image d-flex align-items-center justify-content-center">No image</div>
+                                }
+                            </td>
+                            <td><strong>@item.Name</strong></td>
+                            <td>@(item.Category?.Name ?? "Uncategorized")</td>
+                            <td>₹@item.Price.ToString("0.00")</td>
+                            <td>@item.Stock</td>
+                            <td>
+                                @if (item.IsAvailable && item.Stock > 0)
+                                {
+                                    <span class="status available">Available</span>
+                                }
+                                else
+                                {
+                                    <span class="status unavailable">Unavailable</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="EditIceCream" asp-route-id="@item.Id"
+                                   class="action-link edit-link">Edit</a>
+
+                                <a asp-action="DeleteIceCream" asp-route-id="@item.Id"
+                                   class="action-link delete-link">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center py-5">
+                            No ice creams found. Click “Add Ice Cream” to create your first product.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

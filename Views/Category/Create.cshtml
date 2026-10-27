@@ -1,0 +1,141 @@
+```cshtml
+@model IceCreamOrderingSystem.Models.Category
+
+@{
+    ViewData["Title"] = "Create Category";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .category-create-page {
+        max-width: 850px;
+        margin: 45px auto;
+        padding: 0 20px;
+    }
+
+    .category-create-card {
+        background: #ffffff;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 12px 35px rgba(23, 77, 55, 0.10);
+        border: 1px solid #e5eee8;
+    }
+
+    .category-heading {
+        color: #174d37;
+        font-weight: 800;
+        margin-bottom: 8px;
+    }
+
+    .category-subtitle {
+        color: #6b7b72;
+        margin-bottom: 28px;
+    }
+
+    .category-create-page .form-control {
+        padding: 12px 14px;
+        border-radius: 10px;
+        border: 1px solid #d8e4dc;
+    }
+
+    .category-create-page .form-control:focus {
+        border-color: #39845c;
+        box-shadow: 0 0 0 0.2rem rgba(57, 132, 92, 0.12);
+    }
+
+    .category-btn {
+        background: #174d37;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 25px;
+        font-weight: 700;
+    }
+
+    .category-btn:hover {
+        background: #267451;
+        color: white;
+    }
+
+    .category-back-btn {
+        display: inline-block;
+        color: #174d37;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 12px 18px;
+    }
+
+    .category-back-btn:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="category-create-page">
+    <div class="category-create-card">
+
+        <div class="mb-4">
+            <h2 class="category-heading">Create New Category</h2>
+            <p class="category-subtitle">
+                Add a category to organize your Frosty Delight ice creams.
+            </p>
+        </div>
+
+        <form asp-controller="Category"
+              asp-action="Create"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger"></div>
+
+            <div class="mb-4">
+                <label asp-for="Name" class="form-label fw-semibold">
+                    Category Name
+                </label>
+
+                <input asp-for="Name"
+                       class="form-control"
+                       placeholder="e.g. Chocolate, Fruit, Classic"
+                       required />
+
+                <span asp-validation-for="Name"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Description" class="form-label fw-semibold">
+                    Description
+                </label>
+
+                <textarea asp-for="Description"
+                          class="form-control"
+                          rows="4"
+                          placeholder="Enter a short category description"></textarea>
+
+                <span asp-validation-for="Description"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label">
+                    Active category
+                </label>
+            </div>
+
+            <div class="d-flex flex-wrap align-items-center">
+                <button type="submit" class="category-btn">
+                    Save Category
+                </button>
+
+                <a asp-controller="Category"
+                   asp-action="Index"
+                   class="category-back-btn">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+```

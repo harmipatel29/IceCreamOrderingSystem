@@ -1,0 +1,154 @@
+ @model IceCreamOrderingSystem.Models.Order
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<style>
+    .confirmation-page {
+        max-width: 850px;
+        margin: 45px auto;
+        padding: 0 18px 50px;
+    }
+
+    .confirmation-card {
+        background: white;
+        border: 1px solid #e2ebe4;
+        border-radius: 20px;
+        padding: 35px;
+        box-shadow: 0 12px 35px rgba(20, 60, 40, .07);
+    }
+
+    .success-icon {
+        width: 76px;
+        height: 76px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: #e5f5e9;
+        color: #197345;
+        font-size: 38px;
+        font-weight: 800;
+    }
+
+    .confirmation-title {
+        color: #174d37;
+        font-weight: 800;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 12px 0;
+        border-bottom: 1px solid #edf1ee;
+    }
+
+    .section-title {
+        color: #174d37;
+        font-weight: 750;
+        margin-top: 28px;
+        margin-bottom: 15px;
+    }
+
+    .confirmation-btn {
+        display: inline-block;
+        background: #174d37;
+        color: white;
+        text-decoration: none;
+        padding: 13px 22px;
+        border-radius: 10px;
+        font-weight: 700;
+    }
+
+    .confirmation-btn:hover {
+        color: white;
+        background: #39845c;
+    }
+</style>
+
+<div class="confirmation-page">
+    <div class="confirmation-card">
+        <div class="text-center">
+            <div class="success-icon">✓</div>
+            <h2 class="confirmation-title">Order Placed Successfully!</h2>
+            <p class="text-muted">
+                Thank you for choosing Frosty Delight.
+                Your order has been received.
+            </p>
+            <span class="badge bg-success">Order #@Model.Id</span>
+        </div>
+
+        <h4 class="section-title">Order Details</h4>
+
+        <div class="detail-row">
+            <span class="text-muted">Order Date</span>
+            <strong>@Model.OrderDate.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</strong>
+        </div>
+
+        <div class="detail-row">
+            <span class="text-muted">Order Status</span>
+            <strong>@Model.OrderStatus</strong>
+        </div>
+
+        <div class="detail-row">
+            <span class="text-muted">Payment Method</span>
+            <strong>Cash on Delivery</strong>
+        </div>
+
+        <div class="detail-row">
+            <span class="text-muted">Payment Status</span>
+            <strong>@Model.PaymentStatus</strong>
+        </div>
+
+        <h4 class="section-title">Delivery Details</h4>
+
+        <div class="detail-row">
+            <span class="text-muted">Customer</span>
+            <strong>@Model.CustomerName</strong>
+        </div>
+
+        <div class="detail-row">
+            <span class="text-muted">Mobile</span>
+            <strong>@Model.Phone</strong>
+        </div>
+
+        <div class="detail-row">
+            <span class="text-muted">Address</span>
+            <span class="text-end">@Model.DeliveryAddress</span>
+        </div>
+
+        <h4 class="section-title">Items Ordered</h4>
+
+        @foreach (var item in Model.OrderItems)
+        {
+            <div class="detail-row">
+                <div>
+                    <strong>@(item.IceCream?.Name ?? "Ice Cream")</strong>
+                    <div class="text-muted small">
+                        ₹@item.UnitPrice.ToString("0.00") × @item.Quantity
+                    </div>
+                </div>
+                <strong>₹@item.Subtotal.ToString("0.00")</strong>
+            </div>
+        }
+
+        <div class="detail-row mt-2">
+            <strong>Total Amount</strong>
+            <strong class="fs-5" style="color:#174d37">
+                ₹@Model.TotalAmount.ToString("0.00")
+            </strong>
+        </div>
+
+        <div class="alert alert-success mt-4">
+            Please keep the payment ready when your order is delivered.
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="Home" asp-action="Shop"
+               class="confirmation-btn">Continue Shopping</a>
+        </div>
+    </div>
+</div>

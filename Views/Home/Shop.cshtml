@@ -1,0 +1,308 @@
+ @model IEnumerable<IceCreamOrderingSystem.Models.IceCream>
+
+@{
+    ViewData["Title"] = "Shop";
+    var categories = ViewBag.Categories as IEnumerable<IceCreamOrderingSystem.Models.Category>
+                     ?? Enumerable.Empty<IceCreamOrderingSystem.Models.Category>();
+}
+
+<style>
+    .shop-page {
+        max-width: 1200px;
+        margin: 35px auto;
+        padding: 0 20px 45px;
+    }
+
+    .shop-heading {
+        margin-bottom: 25px;
+    }
+
+    .shop-heading h1 {
+        color: #205b3e;
+        font-weight: 850;
+        font-size: clamp(28px, 4vw, 38px);
+    }
+
+    .shop-heading p {
+        color: #778279;
+        margin-bottom: 0;
+    }
+
+    .filter-panel {
+        display: grid;
+        grid-template-columns: 2fr 1fr auto;
+        gap: 12px;
+        padding: 18px;
+        border: 1px solid #e5ece7;
+        border-radius: 15px;
+        margin-bottom: 28px;
+        background: #f8faf8;
+    }
+
+    .filter-panel input,
+    .filter-panel select {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid #dce5de;
+        border-radius: 9px;
+        padding: 11px 12px;
+        background: white;
+        outline: none;
+    }
+
+    .filter-panel input:focus,
+    .filter-panel select:focus {
+        border-color: #39835b;
+        box-shadow: 0 0 0 3px #39835b18;
+    }
+
+    .filter-btn {
+        border: 0;
+        background: #236746;
+        color: white;
+        padding: 11px 20px;
+        border-radius: 9px;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .filter-btn:hover,
+    .add-cart-btn:hover {
+        background: #174b31;
+        color: white;
+    }
+
+    .shop-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(235px, 1fr));
+        gap: 22px;
+    }
+
+    .shop-card {
+        border: 1px solid #e5ece7;
+        border-radius: 16px;
+        overflow: hidden;
+        background: white;
+        box-shadow: 0 5px 20px #183b2909;
+        transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .shop-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 28px #183b2915;
+    }
+
+    .shop-img {
+        height: 200px;
+        background: #f4f7f3;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+
+    .shop-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .image-placeholder {
+        color: #829087;
+        font-size: 14px;
+    }
+
+    .shop-info {
+        padding: 18px;
+    }
+
+    .shop-info h3 {
+        font-size: 19px;
+        font-weight: 750;
+        margin: 8px 0;
+        color: #263b2d;
+    }
+
+    .category-label {
+        color: #4c805f;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+    }
+
+    .description {
+        color: #778279;
+        font-size: 13px;
+        min-height: 38px;
+        line-height: 1.6;
+    }
+
+    .shop-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 17px;
+        padding-top: 14px;
+        border-top: 1px solid #edf1ed;
+    }
+
+    .price {
+        color: #205b3e;
+        font-weight: 800;
+        font-size: 20px;
+        white-space: nowrap;
+    }
+
+    .add-cart-form {
+        margin: 0;
+    }
+
+    .add-cart-btn {
+        background: #236746;
+        color: white;
+        border: none;
+        padding: 10px 13px;
+        border-radius: 9px;
+        font-weight: 700;
+        font-size: 13px;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: background .2s ease;
+    }
+
+    .empty-state {
+        grid-column: 1 / -1;
+        padding: 45px 20px;
+        text-align: center;
+        background: #f5f8f5;
+        border: 1px dashed #cbd9ce;
+        border-radius: 15px;
+    }
+
+    .empty-state h3 {
+        color: #205b3e;
+        font-weight: 750;
+    }
+
+    @@media (max-width: 650px) {
+        .filter-panel {
+            grid-template-columns: 1fr;
+        }
+
+        .shop-grid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .shop-img {
+            height: 175px;
+        }
+
+        .shop-info {
+            padding: 14px;
+        }
+    }
+</style>
+
+<div class="shop-page">
+    <div class="shop-heading">
+        <h1>Explore Our Ice Creams</h1>
+        <p>Discover your favourite flavours and enjoy every scoop.</p>
+    </div>
+
+    <form asp-controller="Home" asp-action="Shop" method="get" class="filter-panel">
+        <input type="text"
+               name="search"
+               value="@ViewBag.Search"
+               placeholder="Search by ice cream name..." />
+
+        <select name="categoryId">
+            <option value="">All Categories</option>
+
+            @foreach (var category in categories)
+            {
+                if (ViewBag.SelectedCategory != null &&
+                    (int)ViewBag.SelectedCategory == category.Id)
+                {
+                    <option value="@category.Id" selected>@category.Name</option>
+                }
+                else
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            }
+        </select>
+
+        <button type="submit" class="filter-btn">Search</button>
+    </form>
+
+    <div class="shop-grid">
+        @if (Model != null && Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <article class="shop-card">
+                    <div class="shop-img">
+                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.Name" />
+                        }
+                        else
+                        {
+                            <span class="image-placeholder">Image coming soon</span>
+                        }
+                    </div>
+
+                    <div class="shop-info">
+                        <div class="category-label">
+                            @(item.Category?.Name ?? "Ice Cream")
+                        </div>
+
+                        <h3>@item.Name</h3>
+
+                        <p class="description">
+                            @(string.IsNullOrWhiteSpace(item.Description)
+                                ? "A delicious treat for your sweet moments."
+                                : item.Description)
+                        </p>
+
+                        <div class="shop-bottom">
+                            <span class="price">
+                                ₹@item.Price.ToString("0.00")
+                            </span>
+
+                            <form asp-controller="Cart"
+                                  asp-action="Add"
+                                  method="post"
+                                  class="add-cart-form">
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+
+                                <button type="submit" class="add-cart-btn">
+                                    Add to Cart
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            }
+        }
+        else
+        {
+            <div class="empty-state">
+                <h3>No matching ice creams found</h3>
+                <p>Try another name or category.</p>
+
+                <a asp-controller="Home"
+                   asp-action="Shop"
+                   class="btn btn-success">
+                    Clear Filters
+                </a>
+            </div>
+        }
+    </div>
+</div>
